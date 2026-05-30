@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocScope — document to text, in your browser</title>
+<meta name="description" content="Convert PDF, DOCX, EPUB, RTF, TXT and scanned images to clean text, Markdown, RTF, or searchable PDF. Runs entirely in your browser. Nothing is uploaded.">
+<link rel="stylesheet" href="css/style.css">
+<!-- All processing libraries are UMD globals loaded here. Everything runs client-side. -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">◎</span>
+    <div>
+      <h1>DocScope</h1>
+      <p class="tag">Documents to clean text. In your browser. Nothing leaves your machine.</p>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="convert">Convert</button>
+    <button class="tab" data-tab="search">Knowledge engine</button>
+    <button class="tab" data-tab="about">About</button>
+  </nav>
+</header>
+
+<main>
+  <!-- CONVERT TAB -->
+  <section id="convert" class="panel active">
+    <div id="drop" class="dropzone">
+      <input id="fileInput" type="file" multiple
+        accept=".pdf,.docx,.epub,.rtf,.txt,.md,.htm,.html,.mobi,.png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+      <div class="drop-inner">
+        <div class="drop-icon">⬆</div>
+        <p><strong>Drop files here</strong> or click to choose</p>
+        <p class="muted">PDF · DOCX · EPUB · RTF · TXT/MD · HTML · images (OCR) · MOBI (experimental)</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label>Output format
+        <select id="outFormat">
+          <option value="txt">Plain text (.txt)</option>
+          <option value="md">Markdown (.md)</option>
+          <option value="rtf">Rich text (.rtf)</option>
+          <option value="pdf">Searchable PDF (.pdf)</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="normalizeWS" checked> Normalize whitespace (more compact)</label>
+      <label class="check"><input type="checkbox" id="forceOCR"> Force OCR on every PDF page</label>
+      <button id="downloadAll" class="ghost" disabled>Download all</button>
+    </div>
+
+    <ul id="queue" class="queue"></ul>
+
+    <div id="previewWrap" class="preview-wrap hidden">
+      <div class="preview-head">
+        <h3 id="previewName">Preview</h3>
+        <div class="preview-actions">
+          <span id="previewStats" class="muted"></span>
+          <button id="copyText" class="ghost small">Copy</button>
+          <button id="downloadOne" class="small">Download</button>
+        </div>
+      </div>
+      <textarea id="preview" spellcheck="false" readonly></textarea>
+    </div>
+  </section>
+
+  <!-- SEARCH TAB -->
+  <section id="search" class="panel">
+    <p class="muted">Full-text search across every document you've converted this session. Index lives only in this tab; nothing is stored or sent anywhere.</p>
+    <input id="searchBox" class="searchbox" type="search" placeholder="Search converted documents…" disabled>
+    <div id="searchStatus" class="muted">Convert at least one document to build the index.</div>
+    <ul id="searchResults" class="results"></ul>
+  </section>
+
+  <!-- ABOUT TAB -->
+  <section id="about" class="panel">
+    <h2>What this is</h2>
+    <p>DocScope extracts clean, correctly-ordered text from documents and re-exports it as TXT, Markdown, RTF, or a text-searchable PDF. Every step runs in your browser through WebAssembly. No file is ever uploaded, which is why it is fast, free, and private by construction.</p>
+    <h3>How each format is handled</h3>
+    <ul class="plain">
+      <li><strong>PDF</strong> — reads the embedded text layer first (instant, perfect fidelity). Pages with no text layer fall back to OCR automatically.</li>
+      <li><strong>DOCX</strong> — structural conversion via Mammoth, with real Markdown output (headings, lists, links preserved).</li>
+      <li><strong>EPUB</strong> — unpacks the archive, walks the spine in reading order, strips markup.</li>
+      <li><strong>RTF</strong> — control-word stripping with Unicode escape handling.</li>
+      <li><strong>Images</strong> (PNG/JPG/TIFF/…) — Tesseract OCR.</li>
+      <li><strong>MOBI</strong> — experimental PalmDoc extraction; for best results convert to EPUB first.</li>
+    </ul>
+    <h3>Honest limits</h3>
+    <p>In-browser OCR (Tesseract) is strong but not better than commercial cloud OCR for messy scans. The born-digital path (PDF text layer, DOCX, EPUB, RTF) is where DocScope is genuinely best-in-class: instant and lossless. OCR is the fallback, not the headline.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>DocScope · client-side · <a href="https://github.com/ihelfrich/docscope">source</a></span>
+  <span id="engineStatus" class="muted">ready</span>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
