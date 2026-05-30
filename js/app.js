@@ -331,7 +331,7 @@
     const body = text
       .replace(/[\\{}]/g, (m) => "\\" + m)
       .replace(/\r?\n/g, "\\par\n")
-      .replace(/[-￿]/g, (c) => "\\u" + c.charCodeAt(0) + "?");
+      .replace(/[\u0080-\uFFFF]/g, (c) => "\\u" + c.charCodeAt(0) + "?");
     return "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Helvetica;}}\\fs22\n" + body + "\n}";
   }
   function buildPDF(text) {
