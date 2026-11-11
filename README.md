@@ -1,5 +1,7 @@
 # DocScope
 
+> **Moved.** DocScope is now the Convert tool in [Scope](https://github.com/ihelfrich/scope) and lives at https://ihelfrich.github.io/scope/convert/. This repository is kept so old links redirect; development continues in `scope/convert/`.
+
 A document-to-text converter and knowledge engine that runs entirely in the browser. Drop in a PDF, DOCX, EPUB, RTF, TXT, HTML, image, or (experimentally) MOBI, and get clean, correctly-ordered text back as `.txt`, `.md`, `.rtf`, or a text-searchable `.pdf`. Then full-text-search everything you've converted.
 
 **Live:** https://ihelfrich.github.io/docscope
